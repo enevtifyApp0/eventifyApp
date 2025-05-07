@@ -1,0 +1,56 @@
+/* Login.css */
+body {
+    background-color: #f8f9fa; /* Light background for contrast */
+    font-family: 'Arial', sans-serif; /* Font style */
+  }
+  
+  .login-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full viewport height */
+  }
+  
+  .form-group {
+    margin-bottom: 20px; /* Space between form groups */
+  }
+  
+  label {
+    font-weight: bold; /* Bold labels */
+    color: #333; /* Dark color for labels */
+  }
+  
+  input {
+    border-radius: 5px; /* Rounded corners for input fields */
+    border: 1px solid #ced4da; /* Light border color */
+    transition: border-color 0.3s; /* Smooth transition for border color */
+  }
+  
+  input:focus {
+    border-color: #007bff; /* Change border color on focus */
+  }
+  
+  .error {
+    color: #dc3545; /* Red color for error messages */
+    font-size: 0.875rem; /* Smaller font size for errors */
+  }
+  
+  .button {
+    width: 100%; /* Full width for the button */
+    padding: 10px; /* Padding for button */
+    font-size: 1rem; /* Font size for button */
+  }
+  
+  .smalltext {
+    text-align: center; /* Center text */
+    color: #555; /* Lighter color for small text */
+  }
+  
+  .smalltext a {
+    color: #007bff; /* Link color */
+    text-decoration: none; /* Remove underline */
+  }
+  
+  .smalltext a:hover {
+    text-decoration: underline; /* Underline on hover */
+  }
