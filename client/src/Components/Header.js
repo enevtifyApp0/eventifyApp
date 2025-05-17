@@ -11,13 +11,22 @@ import logo from "../Images/logo1.png";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../Features/UserSlice";
-import { FaUser, FaHome, FaSignOutAlt, FaPlusCircle } from "react-icons/fa";
+import {
+  FaUser,
+  FaHome,
+  FaSignOutAlt,
+  FaPlusCircle,
+  FaCalendarCheck,
+} from "react-icons/fa";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { FaUserAlt, FaUsersCog } from "react-icons/fa";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const user = useSelector((state) => state.users.user);
 
   const handleLogout = async () => {
     dispatch(logout());
@@ -77,15 +86,7 @@ const Header = () => {
               <FaHome /> Home
             </NavLink>
           </NavItem>
-          <NavItem>
-            <NavLink
-              tag={Link}
-              to="/profile"
-              className="d-flex align-items-center gap-1 text-success"
-            >
-              <FaUser /> Profile
-            </NavLink>
-          </NavItem>
+
           <NavItem>
             <NavLink
               tag={Link}
@@ -95,6 +96,36 @@ const Header = () => {
               <FaPlusCircle /> Add Event
             </NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink
+              tag={Link}
+              to="/books"
+              className="d-flex align-items-center gap-1 text-success"
+            >
+              <FaCalendarCheck /> Bookings
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              tag={Link}
+              to="/profile"
+              className="d-flex align-items-center gap-1 text-success"
+            >
+              <FaUser /> Profile
+            </NavLink>
+          </NavItem>
+          {user.userType === "admin" && (
+            <NavItem>
+              <NavLink
+                tag={Link}
+                to="/manage"
+                className="d-flex align-items-center gap-1 text-success"
+              >
+                <FaUsersCog /> Manage
+              </NavLink>
+            </NavItem>
+          )}
+
           <NavItem>
             <NavLink
               onClick={handleLogout}

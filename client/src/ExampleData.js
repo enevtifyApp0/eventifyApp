@@ -14,7 +14,13 @@ export const UsersData = [
   {
     id: 3,
     name: "Jaboob",
-    email: "jaboob@utas.edu.om",
+    email: "jaboob@gmail.com",
+    password: "12345",
+  },
+  {
+    id: 3,
+    name: "alyafai",
+    email: "alyafaib@gmail.com",
     password: "12345",
   },
 ];

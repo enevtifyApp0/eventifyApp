@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import * as ENV from "../config";
 
 const initialState = {
   user: {},
@@ -8,11 +9,11 @@ const initialState = {
   isError: false,
 };
 
-// ✅ Thunk: تسجيل مستخدم جديد
+//Thunk for Register a new user
 export const registerUser = createAsyncThunk(
   "users/registerUser",
   async (userData) => {
-    const response = await axios.post("http://localhost:3001/registerUser", {
+    const response = await axios.post(`${ENV.SERVER_URL}/registerUser`, {
       name: userData.name,
       email: userData.email,
       password: userData.password,
@@ -21,10 +22,10 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// ✅ Thunk: تسجيل الدخول
+//  Thunk for Login
 export const login = createAsyncThunk("users/login", async (userData) => {
   try {
-    const response = await axios.post("http://localhost:3001/login", {
+    const response = await axios.post(`${ENV.SERVER_URL}/login`, {
       email: userData.email,
       password: userData.password,
     });
@@ -35,12 +36,12 @@ export const login = createAsyncThunk("users/login", async (userData) => {
   }
 });
 
-// ✅ Thunk: تسجيل الخروج
+//  Thunk for logout
 export const logout = createAsyncThunk("users/logout", async () => {
-  await axios.post("http://localhost:3001/logout");
+  await axios.post(`${ENV.SERVER_URL}/logout`);
 });
 
-// ✅ Thunk: تحديث الملف الشخصي (بما في ذلك الصورة)
+//  Thunk for Update profile with photo
 export const updateUserProfile = createAsyncThunk(
   "users/updateUserProfile",
   async (userData) => {
@@ -53,7 +54,7 @@ export const updateUserProfile = createAsyncThunk(
       }
 
       const response = await axios.put(
-        `http://localhost:3001/updateUserProfile/${userData.email}`,
+        `${ENV.SERVER_URL}/updateUserProfile/${userData.email}`,
         formData,
         {
           headers: {
@@ -70,7 +71,7 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
-// ✅ Slice
+// Slice
 const userSlice = createSlice({
   name: "users",
   initialState,
@@ -98,6 +99,7 @@ const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.user = action.payload;
       })
       .addCase(registerUser.rejected, (state) => {
         state.isLoading = false;
@@ -132,7 +134,7 @@ const userSlice = createSlice({
         state.isError = true;
       })
 
-      // ✅ Update Profile
+      //  Update Profile
       .addCase(updateUserProfile.pending, (state) => {
         state.isLoading = true;
       })

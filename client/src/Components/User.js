@@ -1,11 +1,15 @@
-import { useSelector } from "react-redux";
+import React from "react";
 
-const User = () => {
-  const user = useSelector((state) => state.users.user);
+const User = ({ userData }) => {
+  const user = userData.userData;
+  // تأكد من استلام userData كممتلكات
+  // تحقق مما إذا كانت هناك بيانات للمستخدم
+  if (!userData) {
+    return <div>No user data available</div>; // رسالة عند عدم وجود بيانات
+  }
 
-  // تحقق مما إذا كان للمستخدم صورة بروفايل
-  const picURL = user.profilePic
-    ? `http://localhost:3001/uploads/${user.profilePic}`
+  const picURL = userData.profilePic
+    ? `http://localhost:3001/uploads/${userData.profilePic}`
     : require("../Images/user.png");
 
   return (
@@ -13,9 +17,9 @@ const User = () => {
       <h1>User Profile</h1>
       <img src={picURL} alt="User" className="userImage" />
       <p>
-        <strong>Name:</strong> {user.name}
+        <strong>Name:</strong> {userData.name}
         <br />
-        <strong>Email:</strong> {user.email}
+        <strong>Email:</strong> {userData.email}
       </p>
     </div>
   );

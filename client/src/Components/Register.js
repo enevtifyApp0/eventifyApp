@@ -46,6 +46,7 @@ const Register = () => {
         name: data.name,
         email: data.email,
         password: data.password,
+        userType: "user",
       };
 
       dispatch(registerUser(userData));

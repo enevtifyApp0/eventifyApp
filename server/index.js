@@ -10,14 +10,28 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import * as ENV from "./config.js";
 
 const app = express();
+
+//Middleware
+const corsOptions = {
+  origin: ENV.CLIENT_URL, //client URL local
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(cors());
 
 // MongoDB connection
 const connectString =
-  "mongodb+srv://shooq:admin2025@eventcluster.izzwyc2.mongodb.net/eventapp?retryWrites=true&w=majority&appName=EventCluster";
+  // "mongodb+srv://shooq:admin2025@eventcluster.izzwyc2.mongodb.net/eventapp?retryWrites=true&w=majority&appName=EventCluster";
+
+  // "mongodb+srv://eventifyapp92:event2025@cluster0.qwaahhn.mongodb.net/eventDB?retryWrites=true&w=majority&appName=Cluster0";
+  `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASSWORD}@${ENV.DB_CLUSTER}/${ENV.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`;
 
 mongoose
   .connect(connectString)
@@ -80,7 +94,7 @@ app.put(
   async (req, res) => {
     const email = req.params.email;
     const { name, password } = req.body;
-
+    const userType = req.body.userType;
     try {
       const userToUpdate = await UserModel.findOne({ email });
       if (!userToUpdate)
@@ -101,8 +115,10 @@ app.put(
         userToUpdate.profilePic = newPic;
       }
 
+      // Update user's name
       userToUpdate.name = name;
-
+      //if there is a value of userType in the request assign the new value
+      if (userType) userToUpdate.userType = userType;
       if (password !== userToUpdate.password) {
         const hashed = await bcrypt.hash(password, 10);
         userToUpdate.password = hashed;
@@ -119,11 +135,20 @@ app.put(
 // Save Book
 app.post("/saveBook", async (req, res) => {
   try {
-    const { bookMsg, email } = req.body;
-    const book = new BookModel({ bookMsg, email });
+    const { bookMsg, email, eventTitle, quantity, totalAmount } = req.body;
+
+    const book = new BookModel({
+      bookMsg,
+      email,
+      eventTitle,
+      quantity,
+      totalAmount,
+    });
+
     await book.save();
     res.status(201).send({ book, msg: "Book saved successfully." });
   } catch (error) {
+    console.error("Saving book error:", error);
     res.status(500).json({ error: "Saving book error." });
   }
 });
@@ -132,8 +157,7 @@ app.post("/saveBook", async (req, res) => {
 app.get("/getBooks", async (req, res) => {
   try {
     const books = await BookModel.find().sort({ createdAt: -1 });
-    const count = await BookModel.countDocuments();
-    res.send({ books, count });
+    res.send({ books });
   } catch (error) {
     res.status(500).json({ error: "Fetching books error." });
   }
@@ -169,7 +193,56 @@ app.get("/events", async (req, res) => {
   }
 });
 
+// GET API - getUsers
+app.get("/getUsers", async (req, res) => {
+  try {
+    // استرجاع جميع المستخدمين من مجموعة UserModel، مرتبين حسب الاسم تصاعديًا
+    const users = await UserModel.find({}).sort({ name: 1 });
+
+    // الحصول على عدد المستخدمين
+    const usersCount = await UserModel.countDocuments({});
+
+    // إرسال البيانات كاستجابة
+    res.send({ users: users, count: usersCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+// Api to Delete User
+app.delete("/deleteUser/:id/", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await UserModel.findByIdAndDelete(id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ msg: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the user" });
+  }
+});
+
+//GET API - for retrieving a single user
+app.get("/getUser/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    // Find the user by _id
+    const user = await UserModel.findById(id);
+    res.send({ user: user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
 // Start server
-app.listen(3001, () => {
-  console.log("Server running on http://localhost:3001");
+const port = ENV.PORT || 3001;
+
+app.listen(port, () => {
+  console.log(`You are Server running on port: ${port}`);
 });

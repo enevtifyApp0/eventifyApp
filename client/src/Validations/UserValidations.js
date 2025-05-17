@@ -1,4 +1,4 @@
-import * as yup from "yup"; //import all exports from the yup
+import * as yup from "yup";
 
 export const userSchemaValidation = yup.object().shape({
   name: yup.string().required("Name is required"),

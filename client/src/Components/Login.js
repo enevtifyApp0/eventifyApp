@@ -19,8 +19,7 @@ import { login } from "../Features/UserSlice";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../Images/logo2.png";
-import '../App.css';
-
+import "../App.css";
 
 const Login = () => {
   const [email, setemail] = useState("");
@@ -58,26 +57,28 @@ const Login = () => {
   useEffect(() => {
     if (isError) {
       navigate("/login");
+    } else if (isSuccess) {
+      if (user && user.userType === "user") {
+        navigate("/");
+      } else {
+        navigate("/manage");
+      }
     }
-
-    if (isSuccess) {
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
-  }, [user, isError, isSuccess]);
-
+  }, [user, isError, isSuccess, navigate]);
 
   return (
     <div className="login-container">
       <Container>
-          <img src={logo} alt="Evenify Logo" className="logo" />
-          <h2 className="title">Welcome Back- Eventify</h2> 
+        <img src={logo} alt="Evenify Logo" className="logo" />
+        <h2 className="title">Welcome Back- Eventify</h2>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="form-group">
             <Col md={12}>
-              <Label for="email" className="label">Email</Label>
-              <input className="input"
+              <Label for="email" className="label">
+                Email
+              </Label>
+              <input
+                className="input"
                 type="email"
                 name="email"
                 onChange={(e) => setemail(e.target.value)}
@@ -87,12 +88,15 @@ const Login = () => {
           </Row>
 
           <Row className="form-group">
-          <Label for="email" className="label">password</Label>
-              <input className="input"
-                type="password"
-                name="password"
-                onChange={(e) => setpassword(e.target.value)}
-              ></input>
+            <Label for="email" className="label">
+              password
+            </Label>
+            <input
+              className="input"
+              type="password"
+              name="password"
+              onChange={(e) => setpassword(e.target.value)}
+            ></input>
             <p className="error">{errors.email?.message}</p>
           </Row>
 

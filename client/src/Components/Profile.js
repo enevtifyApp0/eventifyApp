@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,6 +12,8 @@ import {
   Col,
 } from "reactstrap";
 import { updateUserProfile } from "../Features/UserSlice";
+import Location from "./Location";
+import User from "./User"; // تأكد من استيراد مكون User
 
 const Profile = () => {
   const user = useSelector((state) => state.users.user);
@@ -23,7 +25,6 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState(user.password);
   const [profilePic, setProfilePic] = useState(null);
 
-  // ⬅️ عند رفع صورة جديدة
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) {
@@ -33,7 +34,6 @@ const Profile = () => {
     }
   };
 
-  // ⬅️ عند الضغط على زر تحديث
   const handleUpdate = (e) => {
     e.preventDefault();
 
@@ -54,27 +54,17 @@ const Profile = () => {
     navigate("/profile");
   };
 
-  // ⬅️ عرض الصورة
   const picURL = user.profilePic
     ? `http://localhost:3001/uploads/${user.profilePic}`
-    : require("../Images/user.png"); // صورة افتراضية
+    : require("../Images/user.png");
 
   return (
     <Container fluid>
       <h2 className="text-center mb-4">Profile</h2>
       <Row className="justify-content-center">
         <Col md={3} className="text-center">
-          <img
-            src={picURL}
-            alt="Profile"
-            className="rounded-circle"
-            style={{ width: "120px", height: "120px", objectFit: "cover" }}
-          />
-          <p className="mt-2">
-            <strong>{user.name}</strong>
-            <br />
-            <small>{user.email}</small>
-          </p>
+          <User userData={user} />
+          <Location />
         </Col>
 
         <Col md={5}>

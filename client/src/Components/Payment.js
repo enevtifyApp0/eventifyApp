@@ -1,50 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import './BookingPay.css'; // Ensure you have a CSS file for styling
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { saveBook } from "../Features/BookSlice";
+import "./BookingPay.css";
 
 const Payment = () => {
   const { eventId } = useParams();
-  const [event, setEvent] = useState(null);
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true); // State to manage loading
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Fetch event data from API
+  const email = useSelector((state) => state.users.user.email); // المستخدم الحالي
+
+  const [event, setEvent] = useState(null);
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/events/${eventId}`);
+        const response = await axios.get(
+          `http://localhost:3001/api/events/${eventId}`
+        );
         setEvent(response.data);
       } catch (err) {
-        setError('Failed to fetch event details.');
+        setError("Failed to fetch event details.");
         console.error(err);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
     fetchEvent();
   }, [eventId]);
 
-  const handlePayment = (e) => {
+  const handlePayment = async (e) => {
     e.preventDefault();
-    alert(`Payment processed for ${event.title} with ID: ${eventId}`);
+
+    try {
+      const bookData = {
+        email,
+        eventTitle: event.title,
+        quantity: 1,
+        totalAmount: event.price,
+        bookMsg: `Booked 1 ticket for ${event.title}`,
+      };
+
+      await dispatch(saveBook(bookData));
+      navigate("/books");
+    } catch (err) {
+      console.error("Booking failed:", err);
+      setError("Booking failed. Please try again.");
+    }
   };
 
-  if (loading) {
-    return <div>Loading event details...</div>; // Loading state
-  }
-
-  if (error) {
-    return <div className="error">{error}</div>; // Error state
-  }
-
-  if (!event) {
-    return <div>No event found.</div>; // Fallback if no event data
-  }
+  if (loading) return <div>Loading event details...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!event) return <div>No event found.</div>;
 
   return (
     <div className="booking-payment-container">
@@ -53,8 +68,8 @@ const Payment = () => {
       <p>{event.description}</p>
       <p>Date: {new Date(event.date).toLocaleDateString()}</p>
       <p>Location: {event.location}</p>
-      <p>Price: ${event.price}</p>
-      
+      <p>Price: OMR {event.price}</p>
+
       <form onSubmit={handlePayment}>
         <div className="form-group">
           <label>Card Number</label>
@@ -84,7 +99,9 @@ const Payment = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-success">Pay</button>
+        <button type="submit" className="btn btn-success">
+          Pay & Book
+        </button>
       </form>
     </div>
   );

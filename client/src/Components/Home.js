@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaCreditCard } from "react-icons/fa";
+import { saveBook } from "../Features/BookSlice";
+import User from "./User"; // تأكد من استيراد مكون User
 
 const Home = () => {
+  const dispatch = useDispatch();
   const email = useSelector((state) => state.users.user.email);
   const navigate = useNavigate();
+
   const [events, setEvents] = useState([]);
   const [modal, setModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -24,7 +28,7 @@ const Home = () => {
     }
   }, [email, navigate]);
 
-  // جلب الأحداث من السيرفر
+  // جلب الأحداث
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -49,20 +53,27 @@ const Home = () => {
 
   const handlePayment = async (e) => {
     e.preventDefault();
+
     const taxRate = 0.1;
     const ticketPrice = selectedEvent.price * ticketQuantity;
-    const taxAmount = ticketPrice * taxRate;
-    const totalAmount = ticketPrice + taxAmount;
+    const totalAmount = ticketPrice + ticketPrice * taxRate;
 
     try {
-      alert(
-        `Payment processed for ${ticketQuantity} tickets of ${
-          selectedEvent.title
-        } for a total of $${totalAmount.toFixed(2)}`
+      await dispatch(
+        saveBook({
+          email,
+          eventTitle: selectedEvent.title,
+          quantity: ticketQuantity,
+          totalAmount,
+          bookMsg: `Booked ${ticketQuantity} ticket(s) for ${selectedEvent.title}`,
+        })
       );
+
       toggleModal();
+      navigate("/books");
     } catch (err) {
-      setError("Payment failed.");
+      console.error("Booking failed:", err);
+      setError("Booking failed. Please try again.");
     }
   };
 
@@ -72,7 +83,6 @@ const Home = () => {
         Upcoming Events
       </h1>
 
-      {/* لفّ البطاقات داخل div خاص بالتوزيع */}
       <div className="events-grid">
         {events.length === 0 ? (
           <p>No events available at the moment</p>
@@ -103,7 +113,6 @@ const Home = () => {
         )}
       </div>
 
-      {/* Modal */}
       <Modal isOpen={modal} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Booking Details</ModalHeader>
         <ModalBody>
@@ -113,7 +122,7 @@ const Home = () => {
               <p>{selectedEvent.description}</p>
               <p>Date: {new Date(selectedEvent.date).toLocaleDateString()}</p>
               <p>Location: {selectedEvent.location}</p>
-              <p>Price per ticket: ${selectedEvent.price}</p>
+              <p>Price per ticket: OMR {selectedEvent.price}</p>
               <div className="form-group">
                 <label>Number of Tickets</label>
                 <input
@@ -127,7 +136,7 @@ const Home = () => {
                 />
               </div>
               <p>
-                Total Price (including tax): $
+                Total Price (including tax): OMR{" "}
                 {(selectedEvent.price * ticketQuantity * 1.1).toFixed(2)}
               </p>
             </>
@@ -150,10 +159,7 @@ const Home = () => {
                 value={cardNumber}
                 onChange={(e) => setCardNumber(e.target.value)}
                 required
-                style={{
-                  width: "100%",
-                  paddingRight: "35px",
-                }}
+                style={{ width: "100%", paddingRight: "35px" }}
               />
             </div>
             <div className="form-group">

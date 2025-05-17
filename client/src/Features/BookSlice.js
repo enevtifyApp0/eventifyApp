@@ -1,65 +1,75 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import * as ENV from "../config";
 
 const initialState = {
   books: [],
-  status: 'idle', // حالة لتتبع الطلب
-  error: null, // لتخزين أي خطأ
+  status: "idle",
+  error: null,
 };
 
-// Thunk لحفظ الكتاب
+// Save a new booking
 export const saveBook = createAsyncThunk(
   "book/saveBook",
-  async (bookData) => {
+  async (bookData, { rejectWithValue }) => {
     try {
-      const response = await axios.post("http://localhost:3001/saveBook", bookData);
-      return response.data.book; // إرجاع الكتاب الجديد إلى Redux
+      const response = await axios.post(`${ENV.SERVER_URL}/saveBook`, bookData);
+      return response.data.book;
     } catch (error) {
-      console.error(error);
-      throw error; // إعادة طرح الخطأ للتعامل معه في الحالة rejected
+      console.error("Save book error:", error);
+      return rejectWithValue(
+        error.response?.data?.error || "Failed to save booking"
+      );
     }
   }
 );
 
-// Thunk لجلب الكتب
-export const getBooks = createAsyncThunk("book/getBooks", async () => {
-  try {
-    const response = await axios.get("http://localhost:3001/getBooks");
-    return response.data.books; // إرجاع الكتب إلى Redux
-  } catch (error) {
-    console.error(error);
-    throw error; // إعادة طرح الخطأ للتعامل معه في الحالة rejected
+// Fetch all bookings
+export const getBooks = createAsyncThunk(
+  "book/getBooks",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${ENV.SERVER_URL}/getBooks`);
+      return response.data.books;
+    } catch (error) {
+      console.error("Get books error:", error);
+      return rejectWithValue(
+        error.response?.data?.error || "Failed to load bookings"
+      );
+    }
   }
-});
+);
 
-// إنشاء Slice للكتب
 const bookSlice = createSlice({
   name: "book",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // saveBook cases
       .addCase(saveBook.pending, (state) => {
         state.status = "loading";
       })
       .addCase(saveBook.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.books.push(action.payload); // إضافة الكتاب الجديد إلى القائمة
+        state.books.push(action.payload);
       })
       .addCase(saveBook.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message; // تخزين رسالة الخطأ
+        state.error = action.payload;
       })
+
+      // getBooks cases
       .addCase(getBooks.pending, (state) => {
-        state.status = "loading"; // تعيين الحالة إلى التحميل
+        state.status = "loading";
       })
       .addCase(getBooks.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.books = action.payload; // تحديث القائمة بالكتب المسترجعة
+        state.books = action.payload;
       })
       .addCase(getBooks.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message; // تخزين رسالة الخطأ
+        state.error = action.payload;
       });
   },
 });

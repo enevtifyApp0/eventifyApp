@@ -17,6 +17,10 @@ const UserSchema = mongoose.Schema({
   profilePic: {
     type: String,
   },
+  userType: {
+    type: String,
+    default: "user",
+  },
 });
 
 const UserModel = mongoose.model("usersinfo", UserSchema);
