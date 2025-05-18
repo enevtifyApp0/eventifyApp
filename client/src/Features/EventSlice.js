@@ -4,8 +4,8 @@ import * as ENV from "../config";
 
 const initialState = {
   events: [],
-  status: "idle", // Status to track order
-  error: null, //  To store any error
+  status: "idle",
+  error: null,
 };
 
 // Thunk to add or create new event
@@ -17,10 +17,10 @@ export const addEvent = createAsyncThunk(
         `${ENV.SERVER_URL}/addEvent`,
         eventData
       );
-      return response.data.event; // Return the new event to Redux
+      return response.data.event;
     } catch (error) {
       console.error(error);
-      throw error; //If rejected the error message is displayed
+      throw error;
     }
   }
 );
@@ -28,7 +28,7 @@ export const addEvent = createAsyncThunk(
 //Thunk for get events
 export const fetchEvents = createAsyncThunk("event/fetchEvents", async () => {
   const response = await axios.get(`${ENV.SERVER_URL}/events`);
-  return response.data; // إرجاع قائمة الأحداث
+  return response.data;
 });
 
 // Slice for events
@@ -39,15 +39,15 @@ const eventSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addEvent.pending, (state) => {
-        state.status = "loading"; // status is loading
+        state.status = "loading";
       })
       .addCase(addEvent.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.events.push(action.payload); // add new event
+        state.events.push(action.payload);
       })
       .addCase(addEvent.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message; // Store error message
+        state.error = action.error.message;
       })
       .addCase(fetchEvents.pending, (state) => {
         state.status = "loading";

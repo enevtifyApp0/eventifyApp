@@ -10,7 +10,7 @@ const Payment = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const email = useSelector((state) => state.users.user.email); // المستخدم الحالي
+  const email = useSelector((state) => state.users.user.email);
 
   const [event, setEvent] = useState(null);
   const [cardNumber, setCardNumber] = useState("");

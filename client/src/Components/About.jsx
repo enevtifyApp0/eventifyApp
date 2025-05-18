@@ -1,4 +1,4 @@
-import React from "react"; // Ensure this line is present if necessary
+import React from "react";
 
 const About = () => {
   return (

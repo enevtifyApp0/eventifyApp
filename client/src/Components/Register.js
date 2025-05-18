@@ -40,7 +40,7 @@ const Register = () => {
 
   // Handle form submission
   const onSubmit = (data) => {
-    console.log("Form Data", data); // You can handle the form submission here
+    console.log("Form Data", data);
     try {
       const userData = {
         name: data.name,
@@ -51,7 +51,7 @@ const Register = () => {
 
       dispatch(registerUser(userData));
       alert("User added.");
-      navigate("/login"); //redirect to login component
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +66,7 @@ const Register = () => {
     <div className="login-container">
       <Container>
         <img src={logo} alt="Eventify Logo" className="logo" />
-        <h2 className="title">Register</h2> {/* Added title */}
+        <h2 className="title">Register</h2>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="form-group">
             <Col md={12}>

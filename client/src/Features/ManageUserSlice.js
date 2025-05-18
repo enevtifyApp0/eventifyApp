@@ -2,11 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import * as ENV from "../config";
 
-// تعريف initialState
 const initialState = {
-  allUsers: [], // مصفوفة لتخزين المستخدمين
-  status: "idle", // حالة الطلب (idle, loading, succeeded, failed)
-  iserror: null, // لتخزين أي خطأ
+  allUsers: [],
+  status: "idle",
+  iserror: null,
 };
 
 // Thunk for get Users
@@ -14,7 +13,6 @@ export const getUsers = createAsyncThunk("user/getUsers", async () => {
   try {
     const response = await axios.get(`${ENV.SERVER_URL}/getUsers`);
     return response.data.users;
-    // console.log(response);
   } catch (error) {
     console.log(error);
   }
@@ -33,10 +31,9 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
-// إنشاء slice لإدارة حالة المستخدمين
 export const manageUserSlice = createSlice({
-  name: "allUsers", //name of the state
-  initialState, // initial value of the state
+  name: "allUsers",
+  initialState,
   reducers: { reset: () => initialState },
   extraReducers: (builder) => {
     builder

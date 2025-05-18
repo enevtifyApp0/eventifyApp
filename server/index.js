@@ -28,8 +28,6 @@ app.use(cors());
 
 // MongoDB connection
 const connectString =
-  // "mongodb+srv://shooq:admin2025@eventcluster.izzwyc2.mongodb.net/eventapp?retryWrites=true&w=majority&appName=EventCluster";
-
   // "mongodb+srv://eventifyapp92:event2025@cluster0.qwaahhn.mongodb.net/eventDB?retryWrites=true&w=majority&appName=Cluster0";
   `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASSWORD}@${ENV.DB_CLUSTER}/${ENV.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -49,8 +47,6 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 const upload = multer({ storage });
-
-// -------- ROUTES --------
 
 // Register
 app.post("/registerUser", async (req, res) => {
@@ -196,13 +192,8 @@ app.get("/events", async (req, res) => {
 // GET API - getUsers
 app.get("/getUsers", async (req, res) => {
   try {
-    // استرجاع جميع المستخدمين من مجموعة UserModel، مرتبين حسب الاسم تصاعديًا
     const users = await UserModel.find({}).sort({ name: 1 });
-
-    // الحصول على عدد المستخدمين
     const usersCount = await UserModel.countDocuments({});
-
-    // إرسال البيانات كاستجابة
     res.send({ users: users, count: usersCount });
   } catch (err) {
     console.error(err);
@@ -210,7 +201,7 @@ app.get("/getUsers", async (req, res) => {
   }
 });
 
-// Api to Delete User
+//  Delete User
 app.delete("/deleteUser/:id/", async (req, res) => {
   const id = req.params.id;
   try {

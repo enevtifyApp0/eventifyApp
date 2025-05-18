@@ -2,10 +2,8 @@ import React from "react";
 
 const User = ({ userData }) => {
   const user = userData.userData;
-  // تأكد من استلام userData كممتلكات
-  // تحقق مما إذا كانت هناك بيانات للمستخدم
   if (!userData) {
-    return <div>No user data available</div>; // رسالة عند عدم وجود بيانات
+    return <div>No user data available</div>;
   }
 
   const picURL = userData.profilePic

@@ -30,12 +30,10 @@ const ManageProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // جلب بيانات المستخدم عند تحميل الصفحة
   const getUser = async () => {
     try {
       const response = await axios.get(`${ENV.SERVER_URL}/getUser/${id}`);
       const user = response.data.user;
-      //console.log(user);
       setUserName(user.name);
       setPwd(user.password);
       setProfilePic(user.profilePic);
@@ -54,7 +52,6 @@ const ManageProfile = () => {
     }
   }, [id]);
 
-  // تغيير صورة الملف الشخصي
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -62,22 +59,20 @@ const ManageProfile = () => {
     }
   };
 
-  // تحديث بيانات المستخدم
+  // Update user data
   const handleUpdate = (event) => {
     event.preventDefault();
     const userData = {
-      email: user.email, // Retrieve email from the Redux store
-      name: userName, // Get the updated name from the state variable
-      password: pwd, // Get the updated password from the state variable
+      email: user.email,
+      name: userName,
+      password: pwd,
       profilePic: profilePic,
       userType: userType,
     };
     console.log(userData);
 
-    // Dispatch the updateUserProfile action to update the user profile in the Redux store
     dispatch(updateUserProfile(userData));
     alert("Profile Updated.");
-    // Navigate back to the profile page after the update is completed
     navigate("/manage");
   };
 

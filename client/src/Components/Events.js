@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "reactstrap";
-import "./../App.css"; // تأكد من وجود الاستايل
+import "./../App.css";
 
 const Events = () => {
   const [events, setEvents] = useState([]);

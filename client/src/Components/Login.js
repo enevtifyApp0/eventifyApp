@@ -57,14 +57,14 @@ const Login = () => {
   useEffect(() => {
     if (isError) {
       navigate("/login");
-    } else if (isSuccess) {
-      if (user && user.userType === "user") {
-        navigate("/");
-      } else {
-        navigate("/manage");
-      }
     }
-  }, [user, isError, isSuccess, navigate]);
+
+    if (isSuccess) {
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  }, [user, isError, isSuccess]);
 
   return (
     <div className="login-container">

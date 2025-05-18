@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import { updateUserProfile } from "../Features/UserSlice";
 import Location from "./Location";
-import User from "./User"; // تأكد من استيراد مكون User
+import User from "./User";
 
 const Profile = () => {
   const user = useSelector((state) => state.users.user);
@@ -46,7 +46,7 @@ const Profile = () => {
       email: user.email,
       name: userName,
       password: pwd,
-      profilePic: profilePic, // صورة جديدة أو null
+      profilePic: profilePic,
     };
 
     dispatch(updateUserProfile(userData));

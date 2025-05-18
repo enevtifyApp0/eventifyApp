@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
-import EventModel from "./Models/EventModel.js"; // Adjust path as necessary
+import EventModel from "./Models/EventModel.js";
 
-const connectString = "your_mongo_connection_string"; // Replace with your MongoDB connection string
+const connectString =
+  "eventifyapp92:event2025@cluster0.qwaahhn.mongodb.net/eventDB?retryWrites=true&w=majority&appName=Cluster0";
 
 const sampleEvents = [
   {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getUsers, deleteUser } from "../Features/ManageUserSlice"; // تأكد من المسار الصحيح
-import * as ENV from "../config"; // تأكد من استيراد البيئة بشكل صحيح
+import { getUsers, deleteUser } from "../Features/ManageUserSlice";
+import * as ENV from "../config";
 
 const Manage = () => {
   const user = useSelector((state) => state.users.user);

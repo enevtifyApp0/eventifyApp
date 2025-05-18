@@ -4,7 +4,7 @@ const BookSchema = mongoose.Schema(
   {
     bookMsg: {
       type: String,
-      required: false, // جعلها اختيارية
+      required: false, // Optional
     },
     email: {
       type: String,

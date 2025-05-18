@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaCreditCard } from "react-icons/fa";
 import { saveBook } from "../Features/BookSlice";
-import User from "./User"; // تأكد من استيراد مكون User
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -21,7 +20,6 @@ const Home = () => {
   const [cvv, setCvv] = useState("");
   const [error, setError] = useState("");
 
-  // التحقق من تسجيل الدخول
   useEffect(() => {
     if (!email) {
       navigate("/login");
