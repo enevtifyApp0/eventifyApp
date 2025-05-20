@@ -21,7 +21,7 @@ const Events = () => {
 
   const bookEvent = async (eventId) => {
     try {
-      const userId = "exampleUserId"; // يجب تغييره لاحقًا
+      const userId = "exampleUserId";
       await axios.post("http://localhost:3001/api/events/bookEvent", {
         eventId,
         userId,

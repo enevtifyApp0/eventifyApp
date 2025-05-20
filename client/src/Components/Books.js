@@ -7,16 +7,22 @@ import { useNavigate } from "react-router-dom";
 
 const Books = () => {
   const books = useSelector((state) => state.books.books);
+  const user = useSelector((state) => state.users.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getBooks());
-  }, []);
+  }, [dispatch]);
 
   const handleEdit = (id) => {
     navigate(`/edit-book/${id}`);
   };
+
+  const filteredBooks =
+    user.userType === "admin"
+      ? books
+      : books.filter((book) => book.email === user.email);
 
   return (
     <div className="booksContainer p-4">
@@ -33,7 +39,7 @@ const Books = () => {
           </tr>
         </thead>
         <tbody>
-          {books.map((book) => (
+          {filteredBooks.map((book) => (
             <tr key={book._id}>
               <td>{book.email}</td>
               <td>{book.eventTitle}</td>

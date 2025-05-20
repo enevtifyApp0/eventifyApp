@@ -41,17 +41,15 @@ const Login = () => {
   var x = 1;
   // Handle form submission
   const onSubmit = (data) => {
-    console.log("Form Data", data); // You can handle the form submission here
+    console.log("Form Data", data);
   };
-
-  //function that will be invoked when the user clicks the login button
 
   const handleLogin = () => {
     const userData = {
       email,
       password,
     };
-    dispatch(login(userData)); //dispatch a login action from the user slice.
+    dispatch(login(userData));
   };
 
   useEffect(() => {
@@ -60,11 +58,13 @@ const Login = () => {
     }
 
     if (isSuccess) {
-      navigate("/");
-    } else {
-      navigate("/login");
+      if (user.userType === "admin") {
+        navigate("/manage");
+      } else {
+        navigate("/");
+      }
     }
-  }, [user, isError, isSuccess]);
+  }, [user, isError, isSuccess, navigate]);
 
   return (
     <div className="login-container">

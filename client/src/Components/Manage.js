@@ -11,13 +11,18 @@ const Manage = () => {
   const picURL = ENV.SERVER_URL + "/uploads/";
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   useEffect(() => {
+    console.log("Current user:", user);
+
     if (!user) {
+      navigate("/login");
+    } else if (user.userType !== "admin") {
       navigate("/login");
     } else {
       dispatch(getUsers());
     }
-  }, [user]);
+  }, [user, dispatch, navigate]);
 
   const handleDelete = (id) => {
     dispatch(deleteUser(id));

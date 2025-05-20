@@ -25,7 +25,7 @@ const ManageProfile = () => {
   const [pwd, setPwd] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [profilePic, setProfilePic] = useState("");
-  const [userType, setuserType] = useState();
+  const [userType, setUserType] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,11 +38,10 @@ const ManageProfile = () => {
       setPwd(user.password);
       setProfilePic(user.profilePic);
       setConfirmPassword(user.password);
-      setuserType(user.userType);
+      setUserType(user.userType);
       setUser(user);
-      console.log(user);
     } catch (error) {
-      console.log(user);
+      console.log(error);
     }
   };
 
@@ -59,8 +58,7 @@ const ManageProfile = () => {
     }
   };
 
-  // Update user data
-  const handleUpdate = (event) => {
+  const handleUpdate = async (event) => {
     event.preventDefault();
     const userData = {
       email: user.email,
@@ -69,9 +67,13 @@ const ManageProfile = () => {
       profilePic: profilePic,
       userType: userType,
     };
-    console.log(userData);
 
-    dispatch(updateUserProfile(userData));
+    const formData = new FormData();
+    for (const key in userData) {
+      formData.append(key, userData[key]);
+    }
+
+    await dispatch(updateUserProfile(formData));
     alert("Profile Updated.");
     navigate("/manage");
   };
@@ -132,12 +134,11 @@ const ManageProfile = () => {
 
             <FormGroup>
               <Label for="usertype">User Type</Label>
-
               <select
                 id="usertype"
                 name="usertype"
                 value={userType}
-                onChange={(e) => setuserType(e.target.value)}
+                onChange={(e) => setUserType(e.target.value)}
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
